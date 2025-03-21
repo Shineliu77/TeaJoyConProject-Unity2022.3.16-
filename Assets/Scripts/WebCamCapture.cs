@@ -11,6 +11,17 @@ public class WebCamCapture : MonoBehaviour
     public string path;
     private void Update()
     {
+        if (FindObjectOfType<JoyConConnect>().jc_ind != -1)
+        {
+            if (FindObjectOfType<JoyConConnect>().joycons == null || FindObjectOfType<JoyConConnect>().joycons.Count <= FindObjectOfType<JoyConConnect>().jc_ind)
+                return;
+            Joycon j = FindObjectOfType<JoyConConnect>().joycons[FindObjectOfType<JoyConConnect>().jc_ind];
+
+            if (j.GetButtonDown(Joycon.Button.DPAD_DOWN)) // B ¡‰°]•k§‚ß‚°^
+            {
+                CaptureScreenshot();
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Space)) {
             CaptureScreenshot();
         }

@@ -6,13 +6,21 @@ public class TeaPouring : MonoBehaviour
    
     private Quaternion initialRotation;
     public GameObject Next_Obj;
+
+    public int SetTime;
+    int Timer;
+    public float Angle;
     void Start()
     {
+        InvokeRepeating("Timers", 1, 1);
         // 記錄初始旋轉
         initialRotation = transform.rotation;
     }
-
-    void Update()
+    void Timers()
+    {
+        Timer++;
+    }
+        void Update()
     {
         if (FindObjectOfType<JoyConConnect>().joycons.Count > 0)
         {
@@ -37,6 +45,16 @@ public class TeaPouring : MonoBehaviour
             // **5. 平滑過渡，讓倒茶更流暢**
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
+        
+
+            if (Timer> SetTime&&transform.eulerAngles.z> Angle) // B 鍵（右手把）
+            {
+                Finish();
+            CancelInvoke();
+
+        }
+
+
         if (Input.GetKeyDown(KeyCode.Space)) {
             Finish();
         }

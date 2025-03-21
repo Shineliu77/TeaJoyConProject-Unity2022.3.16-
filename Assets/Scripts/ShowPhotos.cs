@@ -6,14 +6,18 @@ public class ShowPhotos : MonoBehaviour
 {
     public GameObject NextObj;
     public GameObject PhotoPage;
+    public GameObject Tip;
     // Start is called before the first frame update
     void Start()
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    void OnEnable()
+    {
+        FindObjectOfType<WebCamCapture>().enabled = false;
+    }
+        // Update is called once per frame
+        void Update()
     {
         if (FindObjectOfType<JoyConConnect>().jc_ind != -1)
         {
@@ -42,13 +46,17 @@ public class ShowPhotos : MonoBehaviour
     void Next()
     {
         Debug.Log("B «öÁä³Q«ö¤U");
-        FindObjectOfType<GoogleApiUse>().N_UploadPic();
+        Tip.SetActive(true);
         StartCoroutine(Wait());
     }
     void ReCapture() {
         gameObject.SetActive(false);
+        FindObjectOfType<WebCamCapture>().enabled = true;
+
     }
     IEnumerator Wait() {
+        yield return new WaitForSeconds(0.3f);
+        FindObjectOfType<GoogleApiUse>().N_UploadPic();
         yield return new WaitForEndOfFrame();
         PhotoPage.GetComponent<WebCamController>().StopCamera();
         PhotoPage.SetActive(false);
