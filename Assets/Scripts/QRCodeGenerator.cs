@@ -61,6 +61,20 @@ public class QRCodeGenerator : MonoBehaviour
 
         Color32[] pixels = writer.Write(text);
         Texture2D texture = new Texture2D(width, height);
+
+        // 設定透明背景
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            if (pixels[i].r == 0 && pixels[i].g == 0 && pixels[i].b == 0) // 黑色部分
+            {
+                pixels[i] = new Color32(82, 117, 27, 255);  // 使用指定的前景色
+            }
+            else
+            {
+                pixels[i] = new Color32(0, 0, 0, 0); // 設為透明
+            }
+        }
+
         texture.SetPixels32(pixels);
         texture.Apply();
         return texture;

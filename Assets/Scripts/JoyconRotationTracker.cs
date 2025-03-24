@@ -8,12 +8,12 @@ public class JoyconRotationTracker : MonoBehaviour
 
     private JoyConConnect joyconConnect;
     private float totalYRotation = 0f; // Cube 累計 Y 軸旋轉角度
-    private int rotationCount = 0;     // 記錄完整旋轉次數
+    public int rotationCount = 0;     // 記錄完整旋轉次數
     private bool hasCompleted = false; // 是否已完成 5 次旋轉
     private float prevZRotation = 0f;  // 上一幀的 Z 軸角度（Joy-Con）
     private float rotationSpeed = 5f;  // 平滑旋轉速度（可調整）
     public GameObject Next_Obj;
-
+    public Animator AnimatorObj;
     void Start()
     {
         joyconConnect = FindObjectOfType<JoyConConnect>();
@@ -44,6 +44,7 @@ public class JoyconRotationTracker : MonoBehaviour
             {
                 totalYRotation = 0f;
                 rotationCount++; // 增加旋轉次數
+                AnimatorObj.SetTrigger("Count");
                 Debug.Log($"旋轉次數：{rotationCount}/5");
 
                 // 更新 UI 顯示旋轉次數

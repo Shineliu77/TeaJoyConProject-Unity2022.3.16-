@@ -9,6 +9,7 @@ public class WebCamCapture : MonoBehaviour
     public RawImage capturedImage;  // 截圖顯示用
     public GameObject DisplayPhoto;
     public string path;
+    public GameObject infoText;
     private void Update()
     {
         if (FindObjectOfType<JoyConConnect>().jc_ind != -1)
@@ -19,41 +20,72 @@ public class WebCamCapture : MonoBehaviour
 
             if (j.GetButtonDown(Joycon.Button.DPAD_DOWN)) // B 鍵（右手把）
             {
+                infoText.SetActive(false);
                 CaptureScreenshot();
             }
         }
         if (Input.GetKeyDown(KeyCode.Space)) {
+            infoText.SetActive(false);
             CaptureScreenshot();
         }
     }
     public void CaptureScreenshot()
     {
-        if (webcamRawImage.texture == null)
-        {
-            Debug.LogError("沒有攝影機畫面可截圖！");
-            return;
-        }
+        // 創建 RenderTexture
+        RenderTexture rt = new RenderTexture(Screen.width, Screen.height, 24);
+        ScreenCapture.CaptureScreenshotIntoRenderTexture(rt);
 
-        // 取得攝影機畫面並轉換為 Texture2D
-        Texture2D snap = new Texture2D(webcamRawImage.texture.width, webcamRawImage.texture.height);
-        snap.SetPixels(((WebCamTexture)webcamRawImage.texture).GetPixels());
+        // 讀取 RenderTexture 的像素資料
+        Texture2D snap = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        RenderTexture.active = rt;
+        snap.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         snap.Apply();
-        snap = FlipTexture(snap);
+        RenderTexture.active = null;
+        rt.Release();
 
+        snap = FlipTexture(snap);
         // 儲存圖片到本機
         byte[] bytes = snap.EncodeToPNG();
         string PicFilePath = Path.Combine(Application.streamingAssetsPath);
         string PicFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
-         path = Path.Combine(PicFilePath, PicFileName);
+        path = Path.Combine(PicFilePath, PicFileName);
 
         File.WriteAllBytes(path, bytes);
-        Debug.Log("圖片儲存完成");
-         Debug.Log("截圖儲存至：" + path);
+        Debug.Log("圖片儲存完成：" + path);
 
         // 顯示截圖到另一個 UI RawImage（如果有的話）
-         capturedImage.texture = snap;
+        capturedImage.texture = snap;
         DisplayPhoto.SetActive(true);
+
     }
+    /*  public void CaptureScreenshot()
+      {
+          if (webcamRawImage.texture == null)
+          {
+              Debug.LogError("沒有攝影機畫面可截圖！");
+              return;
+          }
+
+          // 取得攝影機畫面並轉換為 Texture2D
+          Texture2D snap = new Texture2D(webcamRawImage.texture.width, webcamRawImage.texture.height);
+          snap.SetPixels(((WebCamTexture)webcamRawImage.texture).GetPixels());
+          snap.Apply();
+          snap = FlipTexture(snap);
+
+          // 儲存圖片到本機
+          byte[] bytes = snap.EncodeToPNG();
+          string PicFilePath = Path.Combine(Application.streamingAssetsPath);
+          string PicFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+           path = Path.Combine(PicFilePath, PicFileName);
+
+          File.WriteAllBytes(path, bytes);
+          Debug.Log("圖片儲存完成");
+           Debug.Log("截圖儲存至：" + path);
+
+          // 顯示截圖到另一個 UI RawImage（如果有的話）
+           capturedImage.texture = snap;
+          DisplayPhoto.SetActive(true);
+      }*/
     private Texture2D FlipTexture(Texture2D original)
     {
         Texture2D flipped = new Texture2D(original.width, original.height);
@@ -69,6 +101,14 @@ public class WebCamCapture : MonoBehaviour
             }
         }
 
+        for (int y = 0; y < original.height; y++)
+        {
+            for (int x = 0; x < original.width; x++)
+            {
+                 flipped.SetPixel(x, original.height - y - 1, original.GetPixel(x, y)); // 上下翻轉
+
+            }
+        }
         flipped.Apply();
         return flipped;
     }

@@ -33,7 +33,7 @@ public class JoyConConnect : MonoBehaviour
 
                 break;
             }
-            if (joycons[i].isLeft) // 左手把
+           if (joycons[i].isLeft) // 左手把
             {
                 jc_ind = i;
                 Debug.Log("已偵測到左手 Joy-Con");

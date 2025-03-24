@@ -5,6 +5,7 @@ using UnityEngine;
 public class NextObj : MonoBehaviour
 {
     public GameObject Next_Obj;
+    public GameObject Close_Obj;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class NextObj : MonoBehaviour
     }
     public void Next() {
         gameObject.SetActive(false);
+        if(Close_Obj!=null) Close_Obj.SetActive(false);
         Next_Obj.SetActive(true);
     }
 }

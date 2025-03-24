@@ -18,6 +18,6 @@ public class VideoToNext : MonoBehaviour
     void OnVideoFinished(VideoPlayer vp)
     {
         NextObj.SetActive(true);  // 顯示下一個物件
-        gameObject.SetActive(false);  // 隱藏當前物件
+       // gameObject.SetActive(false);  // 隱藏當前物件
     }
 }

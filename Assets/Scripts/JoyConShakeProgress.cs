@@ -9,10 +9,13 @@ public class JoyConShakeProgress : MonoBehaviour
     public Slider progressBar; // 秈兵
     private int shakeCount = 0; // 璸计穘Ω计
     private float lastAccelY = 0f; // Ω硉 Y 禸计
-    private float shakeThreshold = 0.5f; // 穘﹚霩
+    private float shakeThreshold =1f; // 穘﹚霩
     private int totalShakes = 10; // 惠璶穘Ω计
     public GameObject Next_Obj;
 
+    public GameObject Ribbon1, Ribbon2;
+    public Image BG;
+    public Sprite[] BGSprites;
     void Start()
     {
                 // ﹍て秈兵
@@ -34,6 +37,9 @@ public class JoyConShakeProgress : MonoBehaviour
             if (Mathf.Abs(accel.y - lastAccelY) > shakeThreshold)
             {
                 shakeCount++;
+                Ribbon1.SetActive(false);
+                Ribbon2.SetActive(true);
+                BG.sprite = BGSprites[shakeCount-1];
                 Debug.Log($"穘Ω计: {shakeCount}");
                 UpdateProgressBar();
             }
@@ -43,6 +49,9 @@ public class JoyConShakeProgress : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             shakeCount++;
+            Ribbon1.SetActive(false);
+            Ribbon2.SetActive(true);
+            BG.sprite = BGSprites[shakeCount-1];
             Debug.Log($"穘Ω计: {shakeCount}");
             UpdateProgressBar();
         }
