@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using TMPro; // 如果有 UI 文字顯示次數
 
 public class JoyconRotationTracker : MonoBehaviour
@@ -14,6 +16,8 @@ public class JoyconRotationTracker : MonoBehaviour
     private float rotationSpeed = 5f;  // 平滑旋轉速度（可調整）
     public GameObject Next_Obj;
     public Animator AnimatorObj;
+    public AudioSource FinishedSound;
+    bool isPlaySound;
     void Start()
     {
         joyconConnect = FindObjectOfType<JoyConConnect>();
@@ -57,7 +61,7 @@ public class JoyconRotationTracker : MonoBehaviour
                     hasCompleted = true;
                     Debug.Log("🎉 Joy-Con 旋轉 5 次完成！");
                     cube.GetComponent<Renderer>().material.color = Color.green;
-                    Finish();
+                        
                 }
             }
 
@@ -74,7 +78,18 @@ public class JoyconRotationTracker : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Finish();
+            StartCoroutine(Finish());
+
+        }
+        if (AnimatorObj.GetCurrentAnimatorStateInfo(0).IsName("原萃雲霧工法Ani5")) {
+            if (AnimatorObj.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.90f && !isPlaySound)
+            {
+                FinishedSound.Play();
+                isPlaySound = true;
+            }
+            if (AnimatorObj.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f)
+                StartCoroutine(Finish());
+
         }
     }
 
@@ -84,8 +99,9 @@ public class JoyconRotationTracker : MonoBehaviour
         return (angle > 180f) ? angle - 360f : angle;
     }
 
-    void Finish()
+    IEnumerator Finish()
     {
+        yield return new WaitForSeconds(FinishedSound.clip.length);
         gameObject.SetActive(false);
         Next_Obj.SetActive(true);
     }

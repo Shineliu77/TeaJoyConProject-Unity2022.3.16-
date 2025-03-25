@@ -5,13 +5,10 @@ public class WebCamController : MonoBehaviour
 {
     public RawImage rawImage; // 拖曳 UI 的 RawImage
     private WebCamTexture webCamTexture;
+ 
     private void Awake()
     {
-        
-    }
-    void OnEnable()
-    {
-     
+
         // 檢查裝置是否有攝影機
         if (WebCamTexture.devices.Length > 0)
         {

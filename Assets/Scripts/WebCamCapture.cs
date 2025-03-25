@@ -1,15 +1,17 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
 
 public class WebCamCapture : MonoBehaviour
 {
-    public RawImage webcamRawImage; // ­ì©lÄá¼v¾÷µe­±
-    public RawImage capturedImage;  // ºI¹ÏÅã¥Ü¥Î
+    public RawImage webcamRawImage; // åŸå§‹æ”å½±æ©Ÿç•«é¢
+    public RawImage capturedImage;  // æˆªåœ–é¡¯ç¤ºç”¨
     public GameObject DisplayPhoto;
     public string path;
     public GameObject infoText;
+
+    public Camera targetCamera;
     private void Update()
     {
         if (FindObjectOfType<JoyConConnect>().jc_ind != -1)
@@ -18,7 +20,7 @@ public class WebCamCapture : MonoBehaviour
                 return;
             Joycon j = FindObjectOfType<JoyConConnect>().joycons[FindObjectOfType<JoyConConnect>().jc_ind];
 
-            if (j.GetButtonDown(Joycon.Button.DPAD_DOWN)) // B Áä¡]¥k¤â§â¡^
+            if (j.GetButtonDown(Joycon.Button.DPAD_DOWN)) // B éµï¼ˆå³æ‰‹æŠŠï¼‰
             {
                 infoText.SetActive(false);
                 CaptureScreenshot();
@@ -31,29 +33,36 @@ public class WebCamCapture : MonoBehaviour
     }
     public void CaptureScreenshot()
     {
-        // ³Ğ«Ø RenderTexture
         RenderTexture rt = new RenderTexture(Screen.width, Screen.height, 24);
-        ScreenCapture.CaptureScreenshotIntoRenderTexture(rt);
+        targetCamera.targetTexture = rt;
 
-        // Åª¨ú RenderTexture ªº¹³¯À¸ê®Æ
-        Texture2D snap = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        // æ¸²æŸ“ç•«é¢åˆ° RenderTexture
+        targetCamera.Render();
+
+        // å°‡ RenderTexture è¤‡è£½åˆ° Texture2D
         RenderTexture.active = rt;
+        Texture2D snap = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
         snap.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         snap.Apply();
+
+        // æ¢å¾©ç›¸æ©Ÿèˆ‡ RenderTexture è¨­å®š
+        targetCamera.targetTexture = null;
         RenderTexture.active = null;
         rt.Release();
 
-        snap = FlipTexture(snap);
-        // Àx¦s¹Ï¤ù¨ì¥»¾÷
-        byte[] bytes = snap.EncodeToPNG();
-        string PicFilePath = Path.Combine(Application.streamingAssetsPath);
+        // Flip texture if needed
+        //snap = FlipTexture(snap); // å¦‚æœæœ‰ä¸Šä¸‹é¡›å€’
+
+        // å„²å­˜
+        string PicFilePath = Application.streamingAssetsPath;
         string PicFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
         path = Path.Combine(PicFilePath, PicFileName);
-
+        byte[] bytes = snap.EncodeToPNG();
         File.WriteAllBytes(path, bytes);
-        Debug.Log("¹Ï¤ùÀx¦s§¹¦¨¡G" + path);
 
-        // Åã¥ÜºI¹Ï¨ì¥t¤@­Ó UI RawImage¡]¦pªG¦³ªº¸Ü¡^
+        Debug.Log("âœ… æˆªåœ–å®Œæˆï¼å„²å­˜æ–¼ï¼š" + path);
+
+        // é¡¯ç¤ºæˆªåœ–åˆ°å¦ä¸€å€‹ UI RawImageï¼ˆå¦‚æœæœ‰çš„è©±ï¼‰
         capturedImage.texture = snap;
         DisplayPhoto.SetActive(true);
 
@@ -62,27 +71,27 @@ public class WebCamCapture : MonoBehaviour
       {
           if (webcamRawImage.texture == null)
           {
-              Debug.LogError("¨S¦³Äá¼v¾÷µe­±¥iºI¹Ï¡I");
+              Debug.LogError("æ²’æœ‰æ”å½±æ©Ÿç•«é¢å¯æˆªåœ–ï¼");
               return;
           }
 
-          // ¨ú±oÄá¼v¾÷µe­±¨ÃÂà´«¬° Texture2D
+          // å–å¾—æ”å½±æ©Ÿç•«é¢ä¸¦è½‰æ›ç‚º Texture2D
           Texture2D snap = new Texture2D(webcamRawImage.texture.width, webcamRawImage.texture.height);
           snap.SetPixels(((WebCamTexture)webcamRawImage.texture).GetPixels());
           snap.Apply();
           snap = FlipTexture(snap);
 
-          // Àx¦s¹Ï¤ù¨ì¥»¾÷
+          // å„²å­˜åœ–ç‰‡åˆ°æœ¬æ©Ÿ
           byte[] bytes = snap.EncodeToPNG();
           string PicFilePath = Path.Combine(Application.streamingAssetsPath);
           string PicFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
            path = Path.Combine(PicFilePath, PicFileName);
 
           File.WriteAllBytes(path, bytes);
-          Debug.Log("¹Ï¤ùÀx¦s§¹¦¨");
-           Debug.Log("ºI¹ÏÀx¦s¦Ü¡G" + path);
+          Debug.Log("åœ–ç‰‡å„²å­˜å®Œæˆ");
+           Debug.Log("æˆªåœ–å„²å­˜è‡³ï¼š" + path);
 
-          // Åã¥ÜºI¹Ï¨ì¥t¤@­Ó UI RawImage¡]¦pªG¦³ªº¸Ü¡^
+          // é¡¯ç¤ºæˆªåœ–åˆ°å¦ä¸€å€‹ UI RawImageï¼ˆå¦‚æœæœ‰çš„è©±ï¼‰
            capturedImage.texture = snap;
           DisplayPhoto.SetActive(true);
       }*/
@@ -95,8 +104,8 @@ public class WebCamCapture : MonoBehaviour
         {
             for (int x = 0; x < original.width; x++)
             {
-               // flipped.SetPixel(x, original.height - y - 1, original.GetPixel(x, y)); // ¤W¤UÂ½Âà
-                flipped.SetPixel(original.width - x - 1, y, original.GetPixel(x, y)); // ¥ª¥kÂ½Âà
+               // flipped.SetPixel(x, original.height - y - 1, original.GetPixel(x, y)); // ä¸Šä¸‹ç¿»è½‰
+                flipped.SetPixel(original.width - x - 1, y, original.GetPixel(x, y)); // å·¦å³ç¿»è½‰
 
             }
         }
@@ -105,7 +114,7 @@ public class WebCamCapture : MonoBehaviour
         {
             for (int x = 0; x < original.width; x++)
             {
-                 flipped.SetPixel(x, original.height - y - 1, original.GetPixel(x, y)); // ¤W¤UÂ½Âà
+                 flipped.SetPixel(x, original.height - y - 1, original.GetPixel(x, y)); // ä¸Šä¸‹ç¿»è½‰
 
             }
         }

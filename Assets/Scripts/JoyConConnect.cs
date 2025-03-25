@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,38 +6,40 @@ using UnityEngine.UI;
 public class JoyConConnect : MonoBehaviour
 {
     public List<Joycon> joycons;
-    public int jc_ind = -1; // ¥Ø«e¨Ï¥Îªº Joy-Con ¯Á¤Ş
+    public int jc_ind = -1; // ç›®å‰ä½¿ç”¨çš„ Joy-Con ç´¢å¼•
     public Text Info;
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = false;  //æ˜¾ç¤ºæ»‘é¼ å…‰æ ‡
+
         DontDestroyOnLoad(gameObject);
         joycons = JoyconManager.Instance.j;
 
         if (joycons == null || joycons.Count == 0)
         {
             Debug.LogWarning("No Joy-Cons detected, destroying gameObject.");
-            Info.text = "¨S¦³Joy-Cons";
+            Info.text = "æ²’æœ‰Joy-Cons";
             return;
         }
 
-        // §PÂ_¥Ø«e¬O¥ª¤âÁÙ¬O¥k¤â
+        // åˆ¤æ–·ç›®å‰æ˜¯å·¦æ‰‹é‚„æ˜¯å³æ‰‹
         for (int i = 0; i < joycons.Count; i++)
         {
-            if (!joycons[i].isLeft) // ¥k¤â§â
+            if (!joycons[i].isLeft) // å³æ‰‹æŠŠ
             {
                 jc_ind = i;
-                Debug.Log("¤w°»´ú¨ì¥k¤â Joy-Con");
-                Info.text = "¤w°»´ú¨ì¥k¤â Joy-Con";
+                Debug.Log("å·²åµæ¸¬åˆ°å³æ‰‹ Joy-Con");
+                Info.text = "å·²åµæ¸¬åˆ°å³æ‰‹ Joy-Con";
                 ChangeScene();
 
                 break;
             }
-           if (joycons[i].isLeft) // ¥ª¤â§â
+           if (joycons[i].isLeft) // å·¦æ‰‹æŠŠ
             {
                 jc_ind = i;
-                Debug.Log("¤w°»´ú¨ì¥ª¤â Joy-Con");
-                Info.text = "¤w°»´ú¨ì¥ª¤â Joy-Con";
+                Debug.Log("å·²åµæ¸¬åˆ°å·¦æ‰‹ Joy-Con");
+                Info.text = "å·²åµæ¸¬åˆ°å·¦æ‰‹ Joy-Con";
 
                 ChangeScene();
                 break;
