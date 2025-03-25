@@ -16,6 +16,10 @@ public class JoyConShakeProgress : MonoBehaviour
     public GameObject Ribbon1, Ribbon2;
     public Image BG;
     public Sprite[] BGSprites;
+
+    public AudioSource FinishedSound;
+    bool isPlaySound;
+    public float WaitTime;
     void Start()
     {
                 // 初始化進度條
@@ -62,12 +66,21 @@ public class JoyConShakeProgress : MonoBehaviour
         if (progressBar != null)
         {
             progressBar.value = (float)shakeCount / totalShakes;
-            if (shakeCount >= totalShakes)
+            if (shakeCount >= totalShakes&&!isPlaySound)
             {
                 Debug.Log("搖晃完成！");
-                gameObject.SetActive(false);
-                Next_Obj.SetActive(true);
+                FinishedSound.Play();
+                isPlaySound=true;
+                StartCoroutine(Finish());
+
             }
         }
+    }
+
+    IEnumerator Finish()
+    {
+        yield return new WaitForSeconds(WaitTime);
+        gameObject.SetActive(false);
+        Next_Obj.SetActive(true);
     }
 }

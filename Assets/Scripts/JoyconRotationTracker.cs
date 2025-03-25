@@ -18,6 +18,8 @@ public class JoyconRotationTracker : MonoBehaviour
     public Animator AnimatorObj;
     public AudioSource FinishedSound;
     bool isPlaySound;
+    public float WaitTime;
+
     void Start()
     {
         joyconConnect = FindObjectOfType<JoyConConnect>();
@@ -101,7 +103,7 @@ public class JoyconRotationTracker : MonoBehaviour
 
     IEnumerator Finish()
     {
-        yield return new WaitForSeconds(FinishedSound.clip.length);
+        yield return new WaitForSeconds(WaitTime);
         gameObject.SetActive(false);
         Next_Obj.SetActive(true);
     }
