@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.Video;
-
+using UnityEngine.Audio;
 public class VideoToNext : MonoBehaviour
 {
     public GameObject NextObj;  // 下一步要顯示的物件
     public VideoPlayer videoPlayer;  // 影片播放器
-
+    public AudioSource BGMAudio;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +18,7 @@ public class VideoToNext : MonoBehaviour
     void OnVideoFinished(VideoPlayer vp)
     {
         NextObj.SetActive(true);  // 顯示下一個物件
+        BGMAudio.Play();
        // gameObject.SetActive(false);  // 隱藏當前物件
     }
 }

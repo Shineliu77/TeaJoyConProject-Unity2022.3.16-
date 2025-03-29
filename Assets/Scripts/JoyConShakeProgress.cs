@@ -40,24 +40,30 @@ public class JoyConShakeProgress : MonoBehaviour
             // 盎代穘
             if (Mathf.Abs(accel.y - lastAccelY) > shakeThreshold)
             {
-                shakeCount++;
-                Ribbon1.SetActive(false);
-                Ribbon2.SetActive(true);
-                BG.sprite = BGSprites[shakeCount-1];
-                Debug.Log($"穘Ω计: {shakeCount}");
-                UpdateProgressBar();
+                if (progressBar.value != 1f)
+                {
+                    shakeCount++;
+                    Ribbon1.SetActive(false);
+                    Ribbon2.SetActive(true);
+                    BG.sprite = BGSprites[shakeCount - 1];
+                    Debug.Log($"穘Ω计: {shakeCount}");
+                    UpdateProgressBar();
+                }
             }
 
             lastAccelY = accel.y;
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            shakeCount++;
-            Ribbon1.SetActive(false);
-            Ribbon2.SetActive(true);
-            BG.sprite = BGSprites[shakeCount-1];
-            Debug.Log($"穘Ω计: {shakeCount}");
-            UpdateProgressBar();
+            if (progressBar.value != 1f)
+            {
+                shakeCount++;
+                Ribbon1.SetActive(false);
+                Ribbon2.SetActive(true);
+                BG.sprite = BGSprites[shakeCount - 1];
+                Debug.Log($"穘Ω计: {shakeCount}");
+                UpdateProgressBar();
+            }
         }
     }
 
