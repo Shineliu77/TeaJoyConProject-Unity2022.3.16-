@@ -22,8 +22,9 @@ public class TVC : MonoBehaviour
         }
         if (videoPlayer.time / videoPlayer.length > VideoStopRate&&!SecondIsStop)
         {
-            videoPlayer.Pause();
-            SecondIsStop = true;
+            Next();
+            // videoPlayer.Pause();
+            //SecondIsStop = true;
         }
             if (FindObjectOfType<JoyConConnect>().jc_ind != -1)
         {

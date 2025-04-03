@@ -3568,7 +3568,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NextObj: {fileID: 1616428652}
   videoPlayer: {fileID: 1262553057}
-  VideoStopSec: 0.1
+  VideoStopSec: 0.01
   VideoStopRate: 0.98
 --- !u!1 &1276578654
 GameObject:
