@@ -8,11 +8,20 @@ public class WebCamController : MonoBehaviour
  
     private void Awake()
     {
+        WebCamDevice[] devices = WebCamTexture.devices;
 
         // 檢查裝置是否有攝影機
         if (WebCamTexture.devices.Length > 0)
         {
-            webCamTexture = new WebCamTexture();
+            // 印出所有可用攝影機名稱
+            for (int i = 0; i < devices.Length; i++)
+            {
+                Debug.Log("攝影機 " + i + ": " + devices[i].name);
+            }
+
+            // 指定你想用的攝影機（這裡選第1個外接鏡頭，可能是 index 1）
+            string selectedCameraName = devices[1].name; // 改成你要的 index
+            webCamTexture = new WebCamTexture(selectedCameraName);
             rawImage.texture = webCamTexture;
             webCamTexture.Play(); // 開始播放攝影機畫面
         }
